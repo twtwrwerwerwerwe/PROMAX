@@ -15,14 +15,24 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from bot.config import settings
 
-engine = create_async_engine(
-    settings.database_url,
-    echo=False,
-    pool_size=20,
-    max_overflow=10,
-    pool_pre_ping=True,
-    pool_recycle=1800,
-)
+# Create engine with options depending on the dialect.
+# SQLite (aiosqlite) does not accept pool_size/max_overflow and uses a NullPool-like
+# configuration, so avoid passing those arguments when the URL points to SQLite.
+db_url_lower = (settings.database_url or "").lower()
+if db_url_lower.startswith("sqlite") or "aiosqlite" in db_url_lower:
+    engine = create_async_engine(
+        settings.database_url,
+        echo=False,
+    )
+else:
+    engine = create_async_engine(
+        settings.database_url,
+        echo=False,
+        pool_size=20,
+        max_overflow=10,
+        pool_pre_ping=True,
+        pool_recycle=1800,
+    )
 
 async_session_factory = async_sessionmaker(
     bind=engine,
