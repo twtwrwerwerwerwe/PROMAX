@@ -41,6 +41,11 @@ RUN python -m pip install --upgrade pip \
 # Copy application files
 COPY --chown=appuser:appuser . /app
 
+# If no .env exists in the image, create one from .env.example so Settings can load.
+# This is a convenience for deployments where env vars are passed via environment
+# (Railway) — remove or adjust if you prefer not to bake secrets into the image.
+RUN if [ ! -f /app/.env ] && [ -f /app/.env.example ]; then cp /app/.env.example /app/.env; fi
+
 RUN mkdir -p /app/logs && chown -R appuser:appuser /app
 
 USER appuser
