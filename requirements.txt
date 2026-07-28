@@ -8,3 +8,4 @@ python-dotenv==1.0.1
 tenacity==9.0.0
 uvloop==0.20.0; sys_platform != "win32"
 # redis removed by request — using MemoryStorage; add back if you change storage.
+aiosqlite==0.19.0
