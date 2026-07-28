@@ -12,3 +12,13 @@ logs/*
 .pytest_cache/
 .mypy_cache/
 *.egg-info/
+node_modules
+dist
+.venv
+*.egg-info
+*.sqlite3
+__pycache__
+*.py[cod]
+venv/
+/.idea
+/.vscode
