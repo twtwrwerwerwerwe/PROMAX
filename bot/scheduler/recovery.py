@@ -34,9 +34,12 @@ async def recover_all_jobs(scheduler: SchedulerManager) -> int:
                 )
             )
             ads = result.scalars().all()
-    except Exception:  # pragma: no cover - runtime resilience
-        logger.exception("Could not query advertisements during scheduler recovery. DB may be unavailable.")
-        logger.warning("Skipping scheduler recovery; will proceed without restoring jobs.")
+    except Exception as exc:  # pragma: no cover - runtime resilience
+        logger.warning(
+            "Could not query advertisements during scheduler recovery (DB may be unavailable): %s",
+            exc,
+        )
+        logger.info("Skipping scheduler recovery; will proceed without restoring jobs.")
         return 0
 
     for ad in ads:

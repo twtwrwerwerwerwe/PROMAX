@@ -51,6 +51,7 @@ class GroupValidatorLoop:
                 async with get_session() as session:
                     service = GroupService(GroupRepository(session), self.bot)
                     await service.revalidate_all()
-            except Exception:  # noqa: BLE001 — fon jarayon hech qachon o'lmasligi kerak
-                logger.exception("Group validator iteratsiyasida xatolik")
+            except Exception as exc:  # noqa: BLE001 — fon jarayon hech qachon o'lmasligi kerak
+                # Log a concise warning to avoid noisy stack traces when DB is temporarily unreachable.
+                logger.warning("Group validator iteration failed: %s", exc)
             await asyncio.sleep(settings.group_validation_interval_hours * 3600)
