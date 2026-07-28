@@ -1,0 +1,53 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtualenv
+.venv/
+env/
+venv/
+ENV/
+
+# VS Code
+.vscode/
+.vscode/*
+
+# PyCharm
+.idea/
+
+# Environment files
+.env
+.env.*
+
+# Distribution / packaging
+.build/
+
+.eggs/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# Byte-compiled, optimized
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+
+# Secrets
+secrets.json
+
+# Railway / deployment
+.railway/
+
+# Ignore editor swap files
+*~
+*.swp
+
+# node deps (if any front-end remains)
+node_modules/
