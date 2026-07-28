@@ -54,8 +54,8 @@ class SubscriptionWatcher:
         while self._running:
             try:
                 await self._check_once()
-            except Exception:  # noqa: BLE001 — fon jarayon hech qachon o'lmasligi kerak
-                logger.exception("Subscription watcher iteratsiyasida xatolik")
+            except Exception as exc:  # noqa: BLE001 — fon jarayon hech qachon o'lmasligi kerak
+                logger.warning("Subscription watcher iteration failed: %s", exc)
             await asyncio.sleep(settings.background_loop_interval_seconds)
 
     async def _check_once(self) -> None:
