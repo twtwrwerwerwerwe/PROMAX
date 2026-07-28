@@ -70,11 +70,19 @@ async def main() -> None:
         me = await bot.get_me()
         logger.info("Bot ishga tushdi: @%s (id=%s)", me.username, me.id)
 
-        recovered = await recover_all_jobs(scheduler)
-        logger.info(
-            "Scheduler recovery yakunlandi: %s ta job tiklandi.",
-            recovered,
-        )
+        # Run scheduler recovery in background so DB connectivity issues
+        # don't block or crash the startup sequence.
+        async def _recover_background():
+            try:
+                recovered = await recover_all_jobs(scheduler)
+                logger.info(
+                    "Scheduler recovery yakunlandi: %s ta job tiklandi.",
+                    recovered,
+                )
+            except Exception:  # pragma: no cover - runtime guard
+                logger.exception("Background scheduler recovery failed.")
+
+        asyncio.create_task(_recover_background())
 
         group_validator.start()
         subscription_watcher.start()
