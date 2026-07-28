@@ -15,9 +15,6 @@ ENV/
 # PyCharm
 .idea/
 
-# Environment files
-.env
-.env.*
 
 # Distribution / packaging
 .build/

@@ -15,6 +15,9 @@ from typing import Dict, List, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import sys
+
+__all__ = ["Settings", "get_settings", "settings"]
 
 
 class Tariff(dict):
@@ -119,4 +122,15 @@ def get_settings() -> Settings:
     return Settings()
 
 
-settings = get_settings()
+try:
+    settings = get_settings()
+except Exception as exc:  # pragma: no cover - startup/runtime guard
+    sys.stderr.write(
+        "Fatal: failed to load Settings — required environment variables may be missing.\n"
+    )
+    sys.stderr.write(
+        "Make sure `BOT_TOKEN` and `DATABASE_URL` are set in the environment or provided in a .env file.\n"
+    )
+    sys.stderr.write(f"Detailed error: {exc}\n")
+    # Exit early with non-zero code so the container logs show a clear reason
+    raise
