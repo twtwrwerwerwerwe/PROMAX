@@ -25,13 +25,19 @@ async def recover_all_jobs(scheduler: SchedulerManager) -> int:
     Returns tiklangan job'lar soni.
     """
     recovered = 0
-    async with get_session() as session:
-        result = await session.execute(
-            select(Advertisement).where(
-                Advertisement.status.in_([AdStatus.ACTIVE.value, AdStatus.PAUSED.value])
+    ads = []
+    try:
+        async with get_session() as session:
+            result = await session.execute(
+                select(Advertisement).where(
+                    Advertisement.status.in_([AdStatus.ACTIVE.value, AdStatus.PAUSED.value])
+                )
             )
-        )
-        ads = result.scalars().all()
+            ads = result.scalars().all()
+    except Exception:  # pragma: no cover - runtime resilience
+        logger.exception("Could not query advertisements during scheduler recovery. DB may be unavailable.")
+        logger.warning("Skipping scheduler recovery; will proceed without restoring jobs.")
+        return 0
 
     for ad in ads:
         try:
